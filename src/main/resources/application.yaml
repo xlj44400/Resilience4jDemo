@@ -1,0 +1,40 @@
+spring:
+  webflux:
+    base-path: /demo
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  health:
+    circuitbreakers:
+      enabled: true
+
+reactive:
+  feign:
+    loadbalancer:
+      enabled: false
+    client:
+      config:
+        httpBinClient:
+          options:
+            readTimeoutMillis: 2000
+            connectTimeoutMillis: 1000
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+    instances:
+      HttpBinClient_getBinWithDelayInSeconds_int:
+        minimumNumberOfCalls: 10
+        failureRateThreshold: 50
+  timelimiter:
+    configs:
+      default:
+        timeoutDuration: 20s
